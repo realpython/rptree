@@ -4,13 +4,24 @@ RP Tree is a command-line tool to generate a directory tree diagram.
 
 ## Run the App
 
-Create a Python virtual environment and run the application:
+To run **RP Tree**, you need to download the source code. Then open a terminal or command-line window and run the following steps:
+
+1. Create and activate a Python virtual environment
 
 ```sh
-$ python3 tree.py /path/to/directory/
+$ cd rptree/
+$ python -m venv ./venv
+$ source venv/bin/activate
+(venv) $
 ```
 
-**Note:** The `-h` option provides help on how to use RP Tree.
+2. Run the application
+
+```sh
+(venv) $ python tree.py /path/to/directory/
+```
+
+**Note:** The `-h` or `--help` option provides help on how to use RP Tree.
 
 ## Current Features
 
@@ -22,6 +33,11 @@ RP Tree also provides the following options:
 - `-h`, `--help` show a usage message
 - `-d`, `--dir-only` generates a directory-only tree
 - `-o`, `--output-file` generates a tree and save it to a file in markdown format
+
+## Release History
+
+- 0.1.0
+  - A work in progress
 
 ## About the Author
 
