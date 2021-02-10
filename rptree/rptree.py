@@ -4,75 +4,82 @@ import os
 import pathlib
 import sys
 
+from collections import deque
+
 PIPE = "│"
 ELBOW = "└──"
 TEE = "├──"
 PIPE_PREFIX = "│   "
+SPACE_PREFIX = "    "
 
 
 class DirectoryTree:
-    def __init__(self, root_dir, output_file=sys.stdout, dir_only=False):
+    def __init__(self, root_dir, dir_only=False, output_file=sys.stdout):
         self._output_file = output_file
         self._generator = _TreeGenerator(root_dir, dir_only)
 
     def generate(self):
-        tree = self._generator.generate_tree()
+        tree = self._generator.build_tree()
         if self._output_file != sys.stdout:
+            # Wrap the tree in a markdown code block
             tree.appendleft("```")
             tree.append("```")
             self._output_file = open(
                 self._output_file, mode="w", encoding="UTF-8"
             )
         with self._output_file as stream:
-            for item in tree:
-                print(item, file=stream)
+            for entry in tree:
+                print(entry, file=stream)
 
 
 class _TreeGenerator:
-    def __init__(self, root, dir_only=False):
-        self._root = pathlib.Path(root)
-        self.dir_only = dir_only
-        self._tree = []
+    def __init__(self, root_dir, dir_only=False):
+        self._root_dir = pathlib.Path(root_dir)
+        self._dir_only = dir_only
+        self._tree = deque()
 
-    def generate_tree(self):
+    def build_tree(self):
         self._tree_head()
-        self._tree_tail(self._root)
+        self._tree_tail(self._root_dir)
         return self._tree
 
     def _tree_head(self):
-        self._tree.append(f"{self._root}{os.sep}")
+        self._tree.append(f"{self._root_dir}{os.sep}")
         self._tree.append(PIPE)
 
-    def _tree_tail(self, dir, prefix=""):
-        entries = self._prepare_entries(dir)
+    def _tree_tail(self, directory, prefix=""):
+        entries = self._prepare_entries(directory)
         entries_count = len(entries)
         for index, entry in enumerate(entries):
             connector = ELBOW if index == entries_count - 1 else TEE
-            path = dir.joinpath(entry)
-            if path.is_dir():
+            if entry.is_dir():
                 self._add_directory(
                     entry, index, entries_count, prefix, connector
                 )
             else:
-                self._add_file(prefix, connector, path)
+                self._add_file(entry, prefix, connector)
 
-    def _prepare_entries(self, dir):
-        entries = dir.iterdir()
-        if self.dir_only:
-            entries = [e for e in entries if dir.joinpath(e).is_dir()]
+    def _prepare_entries(self, directory):
+        entries = directory.iterdir()
+        if self._dir_only:
+            entries = [entry for entry in entries if entry.is_dir()]
             return entries
-        entries = sorted(entries, key=lambda e: dir.joinpath(e).is_file())
+        entries = sorted(entries, key=lambda entry: entry.is_file())
         return entries
 
-    def _add_directory(self, entry, index, entries_count, prefix, connector):
-        self._tree.append(f"{prefix}{connector}{entry.name}{os.sep}")
+    def _add_directory(
+        self, directory, index, entries_count, prefix, connector
+    ):
+        self._tree.append(f"{prefix}{connector} {directory.name}{os.sep}")
         if index != entries_count - 1:
             prefix += PIPE_PREFIX
+        else:
+            prefix += SPACE_PREFIX
         self._tree_tail(
-            dir=entry,
+            directory=directory,
             prefix=prefix,
         )
-        self._tree.append(prefix)
+        self._tree.append(prefix.rstrip())
 
-    def _add_file(self, prefix, connector, path):
-        self._tree.append(f"{prefix}{connector} {path.name}")
+    def _add_file(self, file, prefix, connector):
+        self._tree.append(f"{prefix}{connector} {file.name}")
