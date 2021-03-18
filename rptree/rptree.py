@@ -60,7 +60,7 @@ class _TreeGenerator:
 
     def _prepare_entries(self, directory):
         entries = sorted(
-            directory.iterdir(), key=lambda entry: str(entry).lower()
+            directory.iterdir(), key=lambda entry: str(entry)
         )
         if self._dir_only:
             return [entry for entry in entries if entry.is_dir()]
