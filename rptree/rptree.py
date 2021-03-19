@@ -3,7 +3,6 @@
 import os
 import pathlib
 import sys
-
 from collections import deque
 
 PIPE = "│"
@@ -60,7 +59,9 @@ class _TreeGenerator:
                 self._add_file(entry, prefix, connector)
 
     def _prepare_entries(self, directory):
-        entries = directory.iterdir()
+        entries = sorted(
+            directory.iterdir(), key=lambda entry: str(entry)
+        )
         if self._dir_only:
             return [entry for entry in entries if entry.is_dir()]
         return sorted(entries, key=lambda entry: entry.is_file())
