@@ -19,13 +19,13 @@ def parse_cmd_line_arguments():
         metavar="ROOT_DIR",
         nargs="?",
         default=".",
-        help="Generate a full directory tree starting at ROOT_DIR",
+        help="generate a full directory tree starting at ROOT_DIR",
     )
     parser.add_argument(
         "-d",
         "--dir-only",
         action="store_true",
-        help="Generate a directory-only tree",
+        help="generate a directory-only tree",
     )
     parser.add_argument(
         "-o",
@@ -33,6 +33,6 @@ def parse_cmd_line_arguments():
         metavar="OUTPUT_FILE",
         nargs="?",
         default=sys.stdout,
-        help="Generate a full directory tree and save it to a file",
+        help="generate a full directory tree and save it to a file",
     )
     return parser.parse_args()
