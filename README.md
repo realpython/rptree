@@ -16,7 +16,7 @@ $ pip install rptree
 $ rptree /path/to/directory/
 ```
 
-**Note:** The `-h` or `--help` option provides help on how to use RP Tree.
+**Note:** The `-h` or `--help` option provides help on using RP Tree.
 
 ## Sample Output
 
@@ -31,10 +31,10 @@ $ rptree hello/
 ├── tests/
 │   └── test_hello.py
 │
-├── requirements.txt
-├── setup.py
+├── LICENSE
 ├── README.md
-└── LICENSE
+├── requirements.txt
+└── setup.py
 ```
 
 That's it! You've generated a nice directory tree diagram.
@@ -52,6 +52,8 @@ RP Tree also provides the following options:
 
 ## Release History
 
+- 0.1.1
+  - Display the entries in alphabetical order
 - 0.1.0
   - A work in progress
 
