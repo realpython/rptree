@@ -44,16 +44,17 @@ class _TreeGenerator:
 
     def _tree_head(self):
         self._tree.append(f"{self._root_dir}{os.sep}")
-        self._tree.append(PIPE)
 
     def _tree_body(self, directory, prefix=""):
         entries = self._prepare_entries(directory)
-        entries_count = len(entries)
+        last_index = len(entries) - 1
         for index, entry in enumerate(entries):
-            connector = ELBOW if index == entries_count - 1 else TEE
+            connector = ELBOW if index == last_index else TEE
             if entry.is_dir():
+                if index == 0:
+                    self._tree.append(prefix + PIPE)
                 self._add_directory(
-                    entry, index, entries_count, prefix, connector
+                    entry, index, last_index, prefix, connector
                 )
             else:
                 self._add_file(entry, prefix, connector)
@@ -67,10 +68,10 @@ class _TreeGenerator:
         return sorted(entries, key=lambda entry: entry.is_file())
 
     def _add_directory(
-        self, directory, index, entries_count, prefix, connector
+        self, directory, index, last_index, prefix, connector
     ):
         self._tree.append(f"{prefix}{connector} {directory.name}{os.sep}")
-        if index != entries_count - 1:
+        if index != last_index:
             prefix += PIPE_PREFIX
         else:
             prefix += SPACE_PREFIX
@@ -78,7 +79,8 @@ class _TreeGenerator:
             directory=directory,
             prefix=prefix,
         )
-        self._tree.append(prefix.rstrip())
+        if prefix := prefix.rstrip():
+            self._tree.append(prefix)
 
     def _add_file(self, file, prefix, connector):
         self._tree.append(f"{prefix}{connector} {file.name}")
