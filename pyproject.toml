@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rptree"
+dynamic = ["version"]
+description = "Generate directory tree diagrams in the terminal"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "Real Python", email = "info@realpython.com"},
+]
+maintainers = [
+    {name = "Leodanis Pozo Ramos", email = "leodanis@realpython.com"},
+]
+license = {text = "MIT"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+
+dependencies = []  # Add dependencies if required
+
+[project.scripts]
+rptree = "rptree.__main__:main"
+
+[tool.setuptools]
+packages = ["rptree"]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "rptree.__version__"}
+
+[tool.setuptools.exclude-package-data]
+"*" = ["tests/*", "tests/**/*"]

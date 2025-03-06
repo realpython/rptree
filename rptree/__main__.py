@@ -1,20 +1,25 @@
-"""This module provides the RP Tree CLI."""
+"""This module provides RP Tree entry point script."""
 
 import pathlib
 import sys
 
-from .cli import parse_cmd_line_arguments
+from . import cli
 from .rptree import DirectoryTree
 
 
-def main():
-    args = parse_cmd_line_arguments()
+def main() -> None:
+    args = cli.parse_cmd_line_arguments()
+
     root_dir = pathlib.Path(args.root_dir)
     if not root_dir.is_dir():
         print("The specified root directory doesn't exist")
-        sys.exit()
+        sys.exit(1)
+
     tree = DirectoryTree(
-        root_dir, dir_only=args.dir_only, output_file=args.output_file
+        root_dir=args.root_dir,
+        dir_only=args.dir_only,
+        output_file=args.output_file,
+        max_depth=args.depth,
     )
     tree.generate()
 
