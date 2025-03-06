@@ -49,9 +49,12 @@ RP Tree also provides the following options:
 - `-h`, `--help` show a usage message
 - `-d`, `--dir-only` generates a directory-only tree diagram
 - `-o`, `--output-file` generates a full directory tree diagram and save it to a file in markdown format
+- `--depth N` limit the depth of the tree to N levels
 
 ## Release History
 
+- 1.0.0
+  - Add a `--depth` option to limit the depth of the tree
 - 0.1.1
   - Display the entries in alphabetical order
 - 0.1.0
