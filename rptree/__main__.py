@@ -19,9 +19,14 @@ def main() -> None:
         exit()
 
     tree = DirectoryTree(
-        root_dir,
+        root_dir=root_dir,
         dir_only=args.dir_only,
+        files_only=args.files_only,
+        dirs_first=args.dirs_first,
+        files_first=args.files_first,
         output_file=args.output_file,
+        ignore=args.ignore,
+        use_gitignore=args.gitignore,
     )
 
     tree.generate()
