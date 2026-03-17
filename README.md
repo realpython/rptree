@@ -4,59 +4,137 @@ RP Tree is a command-line tool to generate directory tree diagrams.
 
 ## Installation
 
-To install **RP Tree**, just run the following command:
-
-```sh
-$ pip install rptree
+```bash
+pip install rptree
 ```
 
 ## Usage
 
-```sh
-$ rptree /path/to/directory/
+```bash
+rptree [ROOT_DIR]
 ```
 
-**Note:** The `-h` or `--help` option provides help on using RP Tree.
+If no directory is provided, the current directory is used.
+
+```bash
+rptree
+```
+
+Show help:
+
+```bash
+rptree -h
+```
+
+## Options
+
+### General
+
+- `-h`, `--help` Show help message
+- `-v`, `--version` Show application version
+
+### Modes
+
+- `-d`, `--dir-only` Display directories only
+- `-f`, `--files-only` Display files only
+
+### Ordering
+
+- `-df`, `--dirs-first` List directories before files
+- `-ff`, `--files-first` List files before directories
+
+> Note: Alphabetical order is always used as the base ordering.
+
+### Ignoring
+
+- `-i`, `--ignore NAME [NAME ...]` Ignore specific files or directories
+- `-gi`, `--gitignore` Respect `.gitignore` rules
+
+### Depth
+
+- `-dl`, `--depth-level N` Limit the tree depth to N levels
+
+### Output
+
+- `-o`, `--output-file FILE` Save the generated tree to a file
+
+## Examples
+
+Generate tree for current directory:
+
+```bash
+rptree
+```
+
+Directories first:
+
+```bash
+rptree . -df
+```
+
+Files only:
+
+```bash
+rptree . -f
+```
+
+Limit depth:
+
+```bash
+rptree . -dl 2
+```
+
+Ignore specific entries:
+
+```bash
+rptree . -i node_modules dist .git
+```
+
+Use `.gitignore` rules:
+
+```bash
+rptree . -gi
+```
+
+Save output to file:
+
+```bash
+rptree . -o tree.txt
+```
 
 ## Sample Output
 
-```sh
-$ rptree hello/
-./hello/
-│
-├── hello/
-│   ├── __init__.py
-│   └── hello.py
-│
+```bash
+project/
+├── src/
+│   ├── main.py
+│   └── utils.py
 ├── tests/
-│   └── test_hello.py
-│
-├── LICENSE
-├── README.md
-├── requirements.txt
-└── setup.py
+│   └── test_main.py
+└── README.md
 ```
-
-That's it! You've generated a nice directory tree diagram.
-
-## Features
-
-If you run RP Tree with a directory path as an argument, then you get a full directory tree diagram printed on your screen. The default input directory is your current directory.
-
-RP Tree also provides the following options:
-
-- `-v`, `--version` shows the application version and exits
-- `-h`, `--help` show a usage message
-- `-d`, `--dir-only` generates a directory-only tree diagram
-- `-o`, `--output-file` generates a full directory tree diagram and save it to a file in markdown format
 
 ## Release History
 
-- 0.1.1
-  - Display the entries in alphabetical order
-- 0.1.0
-  - A work in progress
+### 0.2.0
 
-## About the Author
+- Added `--files-only` (`-f`)
+- Added `--dirs-first` (`-df`)
+- Added `--files-first` (`-ff`)
+- Added `--ignore` (`-i`)
+- Added `.gitignore` support (`-gi`)
+- Added `--depth-level` (`-dl`)
+- Improved tree formatting
+- Added type hints
 
-Leodanis Pozo Ramos - Email: leodanis@realpython.com
+### 0.1.1
+
+- Display entries in alphabetical order
+
+### 0.1.0
+
+- Initial release
+
+## Author
+
+Leodanis Pozo Ramos

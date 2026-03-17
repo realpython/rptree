@@ -13,7 +13,6 @@ def parse_cmd_line_arguments() -> argparse.Namespace:
     )
 
     parser.version = f"RP Tree v{__version__}"
-
     parser.add_argument("-v", "--version", action="version")
 
     parser.add_argument(
@@ -55,12 +54,12 @@ def parse_cmd_line_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "-i"
+        "-i",
         "--ignore",
-        metavar="NAME",
+        metavar="PATTERN",
         nargs="*",
         default=None,
-        help="ignore specific files or directories",
+        help="ignore files or directories (supports patterns, e.g. *.py)",
     )
 
     parser.add_argument(
@@ -68,6 +67,15 @@ def parse_cmd_line_arguments() -> argparse.Namespace:
         "--gitignore",
         action="store_true",
         help="respect .gitignore rules",
+    )
+
+    parser.add_argument(
+        "-dl",
+        "--depth-level",
+        metavar="N",
+        type=int,
+        default=None,
+        help="limit tree depth to N levels",
     )
 
     parser.add_argument(
@@ -88,5 +96,8 @@ def parse_cmd_line_arguments() -> argparse.Namespace:
 
     if args.files_only and (args.dirs_first or args.files_first):
         parser.error("ordering options are not valid with --files-only")
+
+    if args.depth_level is not None and args.depth_level < 0:
+        parser.error("--depth-level must be >= 0")
 
     return args
