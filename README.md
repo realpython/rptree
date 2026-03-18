@@ -1,6 +1,6 @@
 # RP Tree
 
-RP Tree is a command-line tool to generate directory tree diagrams.
+RP Tree is a simple and fast CLI tool to generate directory tree diagrams.
 
 ## Installation
 
@@ -14,7 +14,7 @@ pip install rptree
 rptree [ROOT_DIR]
 ```
 
-If no directory is provided, the current directory is used.
+If no directory is provided, the current directory is used:
 
 ```bash
 rptree
@@ -31,36 +31,40 @@ rptree -h
 ### General
 
 - `-h`, `--help` Show help message
-- `-v`, `--version` Show application version
+- `-v`, `--version` Show version
 
 ### Modes
 
-- `-d`, `--dir-only` Display directories only
-- `-f`, `--files-only` Display files only
+- `-d`, `--dir-only` Show directories only
+- `-f`, `--files-only` Show files only
 
 ### Ordering
 
 - `-df`, `--dirs-first` List directories before files
 - `-ff`, `--files-first` List files before directories
 
-> Note: Alphabetical order is always used as the base ordering.
+> Alphabetical order is always applied as base sorting.
+
+### Display
+
+- `-n`, `--no-pipes` Remove vertical pipes between branches
 
 ### Ignoring
 
-- `-i`, `--ignore NAME [NAME ...]` Ignore specific files or directories
+- `-i`, `--ignore PATTERN [PATTERN ...]` Ignore files/directories
 - `-gi`, `--gitignore` Respect `.gitignore` rules
 
 ### Depth
 
-- `-dl`, `--depth-level N` Limit the tree depth to N levels
+- `-dl`, `--depth-level N` Limit depth
 
 ### Output
 
-- `-o`, `--output-file FILE` Save the generated tree to a file
+- `-o`, `--output-file FILE` Save output to file (Markdown format)
 
 ## Examples
 
-Generate tree for current directory:
+Basic:
 
 ```bash
 rptree
@@ -84,27 +88,50 @@ Limit depth:
 rptree . -dl 2
 ```
 
-Ignore specific entries:
+Ignore entries:
 
 ```bash
 rptree . -i node_modules dist .git
 ```
 
-Use `.gitignore` rules:
+Use `.gitignore`:
 
 ```bash
 rptree . -gi
 ```
 
-Save output to file:
+No pipes mode:
 
 ```bash
-rptree . -o tree.txt
+rptree . -n
+```
+
+Save to file:
+
+```bash
+rptree . -o tree.md
 ```
 
 ## Sample Output
 
-```bash
+### Default
+
+```text
+project/
+│
+├── src/
+│   ├── main.py
+│   └── utils.py
+│
+├── tests/
+│   └── test_main.py
+│
+└── README.md
+```
+
+### No pipes (`-n`)
+
+```text
 project/
 ├── src/
 │   ├── main.py
@@ -114,22 +141,29 @@ project/
 └── README.md
 ```
 
+## Features
+
+- Clean and readable tree output
+- `.gitignore` support
+- Custom ignore patterns
+- Depth limiting
+- Flexible sorting
+- Optional compact mode (`--no-pipes`)
+
 ## Release History
+
+### 0.3.0
+
+- Fixed `--no-pipes` behavior
+- Fixed `.gitignore` directory handling
+- Improved tree formatting (matches classic `tree`)
+- Added modern packaging (`pyproject.toml`)
 
 ### 0.2.0
 
-- Added `--files-only` (`-f`)
-- Added `--dirs-first` (`-df`)
-- Added `--files-first` (`-ff`)
-- Added `--ignore` (`-i`)
-- Added `.gitignore` support (`-gi`)
-- Added `--depth-level` (`-dl`)
-- Improved tree formatting
-- Added type hints
-
-### 0.1.1
-
-- Display entries in alphabetical order
+- Added filtering and ordering options
+- Added `.gitignore` support
+- Added depth control
 
 ### 0.1.0
 
@@ -138,3 +172,7 @@ project/
 ## Author
 
 Leodanis Pozo Ramos
+
+```
+
+```

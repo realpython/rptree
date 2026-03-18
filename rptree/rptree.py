@@ -24,6 +24,7 @@ class DirectoryTree:
         files_only: bool = False,
         dirs_first: bool = False,
         files_first: bool = False,
+        no_pipes: bool = False,
         ignore: Optional[List[str]] = None,
         use_gitignore: bool = False,
         depth_level: Optional[int] = None,
@@ -36,6 +37,7 @@ class DirectoryTree:
             files_only=files_only,
             dirs_first=dirs_first,
             files_first=files_first,
+            no_pipes=no_pipes,
             ignore=ignore,
             use_gitignore=use_gitignore,
             depth_level=depth_level,
@@ -64,15 +66,17 @@ class _TreeGenerator:
         files_only: bool,
         dirs_first: bool,
         files_first: bool,
+        no_pipes: bool,
         ignore: Optional[List[str]],
         use_gitignore: bool,
         depth_level: Optional[int],
     ) -> None:
-        self._root_dir = root_dir
+        self._root_dir = root_dir.resolve()
         self._dir_only = dir_only
         self._files_only = files_only
         self._dirs_first = dirs_first
         self._files_first = files_first
+        self._no_pipes = no_pipes
         self._ignore: Set[str] = set(ignore or [])
         self._depth_level = depth_level
         self._tree: Deque[str] = deque()
@@ -82,47 +86,59 @@ class _TreeGenerator:
             try:
                 import pathspec
 
-                gitignore = root_dir / ".gitignore"
+                gitignore = self._root_dir / ".gitignore"
                 if gitignore.exists():
                     patterns = gitignore.read_text().splitlines()
                     self._gitignore = pathspec.PathSpec.from_lines(
                         "gitwildmatch", patterns
                     )
             except ImportError:
-                print(
-                    "Warning: pathspec not installed, .gitignore ignored",
-                    file=sys.stderr,
-                )
+                print("Warning: pathspec not installed", file=sys.stderr)
 
     def build_tree(self) -> Deque[str]:
-        self._tree.append(f"{self._root_dir.name}/")
-        self._tree_body(self._root_dir, depth=0)
+        root_name = self._root_dir.name or str(self._root_dir)
+        self._tree.append(f"{root_name}/")
+        self._tree_body(self._root_dir, prefix="", depth=0)
         return self._tree
 
     def _tree_body(
         self,
         directory: pathlib.Path,
-        prefix: str = "",
-        depth: int = 0,
+        prefix: str,
+        depth: int,
     ) -> None:
         if self._depth_level is not None and depth >= self._depth_level:
             return
 
         entries = self._prepare_entries(directory)
+        if not entries:
+            return
+
         last_index = len(entries) - 1
 
         for index, entry in enumerate(entries):
-            connector = ELBOW if index == last_index else TEE
+            is_last = index == last_index
+            connector = ELBOW if is_last else TEE
+
+            self._tree.append(
+                f"{prefix}{connector} {entry.name}{'/' if entry.is_dir() else ''}"
+            )
 
             if entry.is_dir():
-                self._tree.append(f"{prefix}{connector} {entry.name}/")
-                extension = SPACE_PREFIX if index == last_index else PIPE_PREFIX
-                self._tree_body(entry, prefix + extension, depth + 1)
-            else:
-                self._tree.append(f"{prefix}{connector} {entry.name}")
+                # prefix base (igual tree clássico)
+                new_prefix = prefix + (SPACE_PREFIX if is_last else PIPE_PREFIX)
+
+                self._tree_body(entry, new_prefix, depth + 1)
+
+                # linha extra com pipe (SÓ no modo padrão)
+                if not self._no_pipes and not is_last:
+                    self._tree.append(prefix + PIPE)
 
     def _prepare_entries(self, directory: pathlib.Path) -> List[pathlib.Path]:
-        entries = sorted(directory.iterdir(), key=lambda e: e.name.lower())
+        try:
+            entries = sorted(directory.iterdir(), key=lambda e: e.name.lower())
+        except PermissionError:
+            return []
 
         entries = [e for e in entries if not self._is_ignored(e)]
 
@@ -140,15 +156,23 @@ class _TreeGenerator:
         return entries
 
     def _is_ignored(self, entry: pathlib.Path) -> bool:
+        # CLI ignore
         for pattern in self._ignore:
             if fnmatch(entry.name, pattern):
                 return True
 
+        # .gitignore
         if self._gitignore:
             try:
                 rel = entry.relative_to(self._root_dir)
-                if self._gitignore.match_file(str(rel)):
+                rel_str = str(rel)
+
+                if self._gitignore.match_file(rel_str):
                     return True
+
+                if entry.is_dir() and self._gitignore.match_file(rel_str + "/"):
+                    return True
+
             except ValueError:
                 pass
 

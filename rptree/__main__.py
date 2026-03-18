@@ -12,26 +12,36 @@ def main() -> None:
     root_dir = pathlib.Path(args.root_dir).resolve()
 
     if not root_dir.exists():
-        print(f"Directory not found: {root_dir}")
+        print(f"Error: directory not found: {root_dir}", file=sys.stderr)
         sys.exit(1)
 
     if not root_dir.is_dir():
-        print(f"Path is not a directory: {root_dir}")
+        print(f"Error: path is not a directory: {root_dir}", file=sys.stderr)
         sys.exit(1)
 
-    tree = DirectoryTree(
-        root_dir=root_dir,
-        dir_only=args.dir_only,
-        files_only=args.files_only,
-        dirs_first=args.dirs_first,
-        files_first=args.files_first,
-        ignore=args.ignore,
-        use_gitignore=args.gitignore,
-        depth_level=args.depth_level,
-        output_file=args.output_file,
-    )
+    try:
+        tree = DirectoryTree(
+            root_dir=root_dir,
+            dir_only=args.dir_only,
+            files_only=args.files_only,
+            dirs_first=args.dirs_first,
+            files_first=args.files_first,
+            no_pipes=args.no_pipes,
+            ignore=args.ignore,
+            use_gitignore=args.gitignore,
+            depth_level=args.depth_level,
+            output_file=args.output_file,
+        )
 
-    tree.generate()
+        tree.generate()
+
+    except KeyboardInterrupt:
+        print("\nOperation cancelled.", file=sys.stderr)
+        sys.exit(130)
+
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
