@@ -177,6 +177,6 @@ project/
 
 Leodanis Pozo Ramos
 
-```
+## License
 
-```
+^RP Tree^ is distributed under the MIT license. See [LICENSE](LICENSE) for more information.
