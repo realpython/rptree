@@ -98,6 +98,12 @@ class _TreeGenerator:
     def build_tree(self) -> Deque[str]:
         root_name = self._root_dir.name or str(self._root_dir)
         self._tree.append(f"{root_name}/")
+
+        if not self._no_pipes:
+            entries = self._prepare_entries(self._root_dir)
+            if entries:
+                self._tree.append(PIPE)
+
         self._tree_body(self._root_dir, prefix="", depth=0)
         return self._tree
 
@@ -125,12 +131,9 @@ class _TreeGenerator:
             )
 
             if entry.is_dir():
-                # prefix base (igual tree clássico)
                 new_prefix = prefix + (SPACE_PREFIX if is_last else PIPE_PREFIX)
-
                 self._tree_body(entry, new_prefix, depth + 1)
 
-                # linha extra com pipe (SÓ no modo padrão)
                 if not self._no_pipes and not is_last:
                     self._tree.append(prefix + PIPE)
 
@@ -156,12 +159,10 @@ class _TreeGenerator:
         return entries
 
     def _is_ignored(self, entry: pathlib.Path) -> bool:
-        # CLI ignore
         for pattern in self._ignore:
             if fnmatch(entry.name, pattern):
                 return True
 
-        # .gitignore
         if self._gitignore:
             try:
                 rel = entry.relative_to(self._root_dir)
