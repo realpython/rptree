@@ -1,5 +1,9 @@
 # RP Tree
 
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-0.2.0-orange)
+
 RP Tree is a simple and fast CLI tool to generate directory tree diagrams.
 
 ## Installation
