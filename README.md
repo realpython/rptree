@@ -1,62 +1,182 @@
 # RP Tree
 
-RP Tree is a command-line tool to generate directory tree diagrams.
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-0.2.0-orange)
+
+RP Tree is a simple and fast CLI tool to generate directory tree diagrams.
 
 ## Installation
 
-To install **RP Tree**, just run the following command:
-
-```sh
-$ pip install rptree
+```bash
+pip install rptree
 ```
 
 ## Usage
 
-```sh
-$ rptree /path/to/directory/
+```bash
+rptree [ROOT_DIR]
 ```
 
-**Note:** The `-h` or `--help` option provides help on using RP Tree.
+If no directory is provided, the current directory is used:
+
+```bash
+rptree
+```
+
+Show help:
+
+```bash
+rptree -h
+```
+
+## Options
+
+### General
+
+- `-h`, `--help` Show help message
+- `-v`, `--version` Show version
+
+### Modes
+
+- `-d`, `--dir-only` Show directories only
+- `-f`, `--files-only` Show files only
+
+### Ordering
+
+- `-df`, `--dirs-first` List directories before files
+- `-ff`, `--files-first` List files before directories
+
+> Alphabetical order is always applied as base sorting.
+
+### Display
+
+- `-n`, `--no-pipes` Remove vertical pipes between branches
+
+### Ignoring
+
+- `-i`, `--ignore PATTERN [PATTERN ...]` Ignore files/directories
+- `-gi`, `--gitignore` Respect `.gitignore` rules
+
+### Depth
+
+- `-dl`, `--depth-level N` Limit depth
+
+### Output
+
+- `-o`, `--output-file FILE` Save output to file (Markdown format)
+
+## Examples
+
+Basic:
+
+```bash
+rptree
+```
+
+Directories first:
+
+```bash
+rptree . -df
+```
+
+Files only:
+
+```bash
+rptree . -f
+```
+
+Limit depth:
+
+```bash
+rptree . -dl 2
+```
+
+Ignore entries:
+
+```bash
+rptree . -i node_modules dist .git
+```
+
+Use `.gitignore`:
+
+```bash
+rptree . -gi
+```
+
+No pipes mode:
+
+```bash
+rptree . -n
+```
+
+Save to file:
+
+```bash
+rptree . -o tree.md
+```
 
 ## Sample Output
 
-```sh
-$ rptree hello/
-./hello/
+### Default
+
+```text
+project/
 │
-├── hello/
-│   ├── __init__.py
-│   └── hello.py
+├── src/
+│   ├── main.py
+│   └── utils.py
 │
 ├── tests/
-│   └── test_hello.py
+│   └── test_main.py
 │
-├── LICENSE
-├── README.md
-├── requirements.txt
-└── setup.py
+└── README.md
 ```
 
-That's it! You've generated a nice directory tree diagram.
+### No pipes (`-n`)
+
+```text
+project/
+├── src/
+│   ├── main.py
+│   └── utils.py
+├── tests/
+│   └── test_main.py
+└── README.md
+```
 
 ## Features
 
-If you run RP Tree with a directory path as an argument, then you get a full directory tree diagram printed on your screen. The default input directory is your current directory.
-
-RP Tree also provides the following options:
-
-- `-v`, `--version` shows the application version and exits
-- `-h`, `--help` show a usage message
-- `-d`, `--dir-only` generates a directory-only tree diagram
-- `-o`, `--output-file` generates a full directory tree diagram and save it to a file in markdown format
+- Clean and readable tree output
+- `.gitignore` support
+- Custom ignore patterns
+- Depth limiting
+- Flexible sorting
+- Optional compact mode (`--no-pipes`)
 
 ## Release History
 
-- 0.1.1
-  - Display the entries in alphabetical order
-- 0.1.0
-  - A work in progress
+### 0.3.0
 
-## About the Author
+- Fixed `--no-pipes` behavior
+- Fixed `.gitignore` directory handling
+- Improved tree formatting (matches classic `tree`)
+- Added modern packaging (`pyproject.toml`)
 
-Leodanis Pozo Ramos - Email: leodanis@realpython.com
+### 0.2.0
+
+- Added filtering and ordering options
+- Added `.gitignore` support
+- Added depth control
+
+### 0.1.0
+
+- Initial release
+
+## Author
+
+Leodanis Pozo Ramos
+
+## License
+
+^RP Tree^ is distributed under the MIT license. See [LICENSE](LICENSE) for more information.

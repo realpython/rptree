@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rptree"
+version = "0.3.0"
+description = "Generate directory tree diagrams from the command line"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Leodanis Pozo Ramos" }
+]
+requires-python = ">=3.8"
+dependencies = [
+    "pathspec"
+]
+
+[project.scripts]
+rptree = "rptree.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/realpython/rptree"
